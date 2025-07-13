@@ -1,1 +1,1 @@
-# Kindify-
+# Kindify
