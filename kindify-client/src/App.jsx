@@ -54,6 +54,7 @@ import { useState, useEffect } from 'react';
 const ProtectedRoute = ({ children }) => {
   // const { isAuthenticated, loading } = useAuth();
 
+  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 

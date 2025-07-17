@@ -8,26 +8,25 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //         try {
-    //             const token = localStorage.getItem("token");
-    //             if (!token) {
-    //                 setLoading(false);
-    //                 return;
-    //             }
-    //             const data = await authService.getUserProfile();
-    //             setUser(data);
-    //         }catch (err) {
-    //             console.error("Error fetching user profile:", err);
-    //             setError(err.message);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchUser();
-    // }, []);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    setLoading(false);
+                    return;
+                }
+                const data = await authService.getUserProfile();
+                setUser(data);
+            }catch (err) {
+                console.error("Error fetching user profile:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const login = async (credentials, role) => {
         try {
