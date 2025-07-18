@@ -64,7 +64,19 @@ const ProtectedRoute = ({ children }) => {
             try {
                 // const token = localStorage.getItem("token");
                 // if (!token) {
-                //     setLoading(false);
+                //     set                // ...existing code...
+                if (loading) {
+                  return <div>Loading...</div>;
+                }
+                
+                if (error) {
+                  return <div>Error: {error}</div>;
+                }
+                
+                if (!user) {
+                  return <Navigate to="/login" />;
+                }
+                // ...existing code...(false);
                 //     return;
                 // }
                 const data = await authService.getUserProfile();
