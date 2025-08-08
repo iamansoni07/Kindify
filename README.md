@@ -96,12 +96,6 @@ The frontend will run at `http://localhost:5173` and the backend at `http://loca
 
 ---
 
-## 📸 Screenshots / Demo
-
-> Add images or demo links here (Dashboards, NGO Profiles, Razorpay Flow, etc.)
-
----
-
 ## 👤 Author
 
 **Aman Soni**  
