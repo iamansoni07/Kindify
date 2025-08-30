@@ -43,7 +43,7 @@ import DonorHome from './pages/Home/DonorHome';
 import NGOHome from './pages/Home/NGOHome';
 
 // Google OAuth Client ID - Replace with your actual Google OAuth Client ID
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // You'll need to replace this with your actual Google OAuth Client ID
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 import SignupForm from './pages/SignupPage/signup.jsx';
 import NgoSingupComponent from './components/SignupForm/ngo.signup.component';
 import LoginPageForm from './pages/LoginPage/login.page.jsx';
@@ -182,7 +182,6 @@ function App() {
 
   const { user } = useAuth();
 
-  console.log("User in App:", user);
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>

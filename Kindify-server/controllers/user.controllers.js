@@ -15,7 +15,7 @@ const userController = {
             // destructure the email, password and role from the request body
             let { name, email, nationality, password } = req.body;
 
-            console.log("Registering user with data:", req.body);
+
 
             const role = req.params.role; // get the role from the request params
 
@@ -158,7 +158,7 @@ const userController = {
             const { email, password } = req.body;
             const role = req.params.role;
 
-            console.log({ email, role, password })
+
             if (!email || !password) {
                 throw new Error("Email and password are required");
             }

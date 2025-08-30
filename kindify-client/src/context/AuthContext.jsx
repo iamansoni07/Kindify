@@ -8,19 +8,40 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Check if token is expired
+    const isTokenExpired = (token) => {
+        try {
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+            return decoded.exp * 1000 < Date.now();
+        } catch (error) {
+            return true;
+        }
+    };
+
+    // Get valid token from storage
+    const getValidToken = () => {
+        const token = authService.getToken();
+        if (!token || isTokenExpired(token)) {
+            authService.logout();
+            return null;
+        }
+        return token;
+    };
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const token = getValidToken();
                 if (!token) {
                     setLoading(false);
                     return;
                 }
                 const data = await authService.getUserProfile();
                 setUser(data);
-            }catch (err) {
+            } catch (err) {
                 console.error("Error fetching user profile:", err);
                 setError(err.message);
+                authService.logout(); // Clear invalid token
             } finally {
                 setLoading(false);
             }
@@ -55,6 +76,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         authService.logout();
         setUser(null);
+        setError(null);
     };
 
     const value = {
@@ -64,7 +86,8 @@ export const AuthProvider = ({ children }) => {
         login,
         googleAuth,
         logout,
-        isAuthenticated:user?true:false
+        isAuthenticated: !!user,
+        refreshToken: getValidToken
     };
 
     return (

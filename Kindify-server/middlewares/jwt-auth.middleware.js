@@ -1,22 +1,59 @@
 import jwt from "jsonwebtoken";
-
+import config from "../config/config.js";
 
 const jwtAuthMiddleware = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
-    // Check if token is present in the Authorization header or cookies
-
-    if (!token) {
-        return res.status(401).json({ message: "Access denied. No token provided." });
-    }
-
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Attach user info to request object
-        next(); // Proceed to the next middleware or route handler
+        const token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
+        
+        // Check if token is present
+        if (!token) {
+            return res.status(401).json({ 
+                success: false,
+                message: "Access denied. No token provided." 
+            });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, config.jwt.secret);
+        
+        // Check if token is expired
+        if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+            return res.status(401).json({ 
+                success: false,
+                message: "Token has expired. Please login again." 
+            });
+        }
+
+        // Check if user is still active
+        if (decoded.isActive === false) {
+            return res.status(401).json({ 
+                success: false,
+                message: "Account is deactivated. Please contact support." 
+            });
+        }
+
+        // Attach user info to request object
+        req.user = decoded;
+        next();
+        
     } catch (error) {
-        return res.status(400).json({ message: "Invalid token." });
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                success: false,
+                message: "Invalid token. Please login again." 
+            });
+        } else if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                success: false,
+                message: "Token has expired. Please login again." 
+            });
+        } else {
+            return res.status(500).json({ 
+                success: false,
+                message: "Token verification failed." 
+            });
+        }
     }
-}
+};
 
 export default jwtAuthMiddleware;
-// This middleware checks for a JWT token in the request headers, verifies it, and attaches the user information to the request object.
